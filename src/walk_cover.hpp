@@ -2,7 +2,7 @@
 #define WALK_COVER_HPP
 
 // Families of walks of length 3 in B(k,n) whose edges use every two-element
-// rho-orbit exactly once (the question left open in section 4.5).
+// rho-orbit exactly once (section 4.5).
 
 #include "debruijn.hpp"
 

@@ -40,8 +40,11 @@ struct Outcome {
     bool finished = false;
 };
 
+// With a nonzero seed the rows are searched in an order shuffled by that seed.
+// A finished search is complete whatever the order.
 Outcome enumerateUntil(const Problem& problem, unsigned choice,
-                       std::chrono::steady_clock::time_point deadline);
+                       std::chrono::steady_clock::time_point deadline,
+                       unsigned seed = 0);
 
 // Called at the start of each round with the choices still open and the
 // time slice (in seconds) each of them gets.
@@ -50,7 +53,8 @@ using RoundCallback =
 
 // Searches every choice within the given time, in rounds: each open choice
 // gets the same slice, which doubles from round to round, and choices that
-// finish drop out.
+// finish drop out. Every round uses a new row order, so a choice whose search
+// got stuck in a branch without covers gets another chance.
 std::vector<Outcome> searchAll(const Problem& problem, double seconds,
                                unsigned threads,
                                const RoundCallback& onRound = {});

@@ -1,4 +1,4 @@
-// The exact cover instance (section 3.3), checked against the counts in the thesis.
+// The exact cover instance (section 3.4), checked against the counts in the thesis.
 #include "conditions.hpp"
 #include "cover_model.hpp"
 #include "dna.hpp"
@@ -15,7 +15,7 @@ int main() {
     suite.expect("120 columns numbered 0..119",
                  columns.size() == 120 && indices.size() == 120 && *indices.rbegin() == 119);
 
-    // Remark 3.3.1 and Remark 3.4.1: 4096 words -> 3336 -> 3324 candidates -> 3306.
+    // Remark 3.4.1 and Remark 3.5.1: 4096 words -> 3336 -> 3324 candidates -> 3306.
     std::size_t distinctOrbits = 0, withoutSite = 0;
     for (const dna::Word& word : dna::allWords(dna::SYMBOL_LENGTH)) {
         std::set<dna::Word> orbits;

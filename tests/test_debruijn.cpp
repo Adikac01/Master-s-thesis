@@ -3,6 +3,7 @@
 #include "testing.hpp"
 
 #include <algorithm>
+#include <set>
 #include <stdexcept>
 #include <tuple>
 
@@ -18,6 +19,30 @@ int main() {
                  graph.vertexPairCount() == 32 && graph.selfComplementaryVertexCount() == 0);
     suite.expect("no transversal of B(4,4) has imbalance below 12",
                  graph.imbalanceLowerBound() == 12);
+
+    // The transversal from the appendix shows that the bound 12 is attained.
+    const std::vector<debruijn::Word> sharp = {
+        "AAAG", "AACG", "AAGA", "AAGG", "AAGT", "AATA", "ACAC", "ACAT", "ACCA", "ACCC",
+        "ACGA", "ACTA", "ACTC", "ACTG", "AGAA", "AGAC", "AGAG", "AGCG", "AGGC", "AGGG",
+        "AGGT", "AGTT", "ATAC", "ATAG", "ATCC", "ATCT", "ATGA", "ATGC", "ATTG", "ATTT",
+        "CAAC", "CAAG", "CACC", "CACT", "CAGC", "CAGG", "CATC", "CATT", "CCAG", "CCAT",
+        "CCCG", "CCGA", "CCGT", "CCTA", "CGAA", "CGAC", "CGAT", "CGCA", "CGGT", "CGTA",
+        "CGTC", "CGTG", "CTAC", "CTCC", "CTCG", "CTGC", "CTGT", "CTTC", "GAAA", "GAAT",
+        "GACA", "GACC", "GACT", "GAGA", "GAGG", "GATA", "GATT", "GCAA", "GCAC", "GCCG",
+        "GCGG", "GCGT", "GCTC", "GCTT", "GGAC", "GGCA", "GGCG", "GGCT", "GGGA", "GGGC",
+        "GGGG", "GGTA", "GGTT", "GTAA", "GTCA", "GTGA", "GTGG", "GTTA", "GTTC", "GTTT",
+        "TAAG", "TAAT", "TACA", "TACT", "TAGA", "TAGC", "TATG", "TCAA", "TCAG", "TCCA",
+        "TCCG", "TCCT", "TCGC", "TCTG", "TGAG", "TGAT", "TGCT", "TGGC", "TGGG", "TGTG",
+        "TGTT", "TTAG", "TTAT", "TTCA", "TTCC", "TTGG", "TTGT", "TTTA", "TTTG", "TTTT"};
+    std::set<debruijn::Word> sharpOrbits;
+    bool noFixedPoint = true;
+    for (const debruijn::Word& edge : sharp) {
+        noFixedPoint = noFixedPoint && !graph.alphabet().isSelfComplementary(edge);
+        sharpOrbits.insert(graph.alphabet().orbitRepresentative(edge));
+    }
+    suite.expect("a full transversal of B(4,4) with imbalance exactly 12 exists",
+                 sharp.size() == 120 && sharpOrbits.size() == 120 && noFixedPoint &&
+                 debruijn::analyseSubgraph(sharp).imbalance == 12);
 
     // Table 4.2: e.g. {AAT, ATT} is odd, while {ATA, TAT} carries two
     // self-complementary edges and is even.

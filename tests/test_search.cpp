@@ -64,6 +64,18 @@ int main() {
     suite.expect("searching choice 1 finishes with no cover",
                  empty.finished && empty.covers == 0);
 
+    // In the natural order the search under choice 68 gets stuck for hours,
+    // while a shuffled order finds a cover almost at once.
+    bool foundShuffled = false;
+    for (unsigned seed = 1; seed <= 5 && !foundShuffled; ++seed)
+        foundShuffled = search::enumerateUntil(problem, 68, Clock::now() + std::chrono::seconds(2),
+                                               seed).covers > 0;
+    suite.expect("a shuffled search finds a cover under choice 68", foundShuffled);
+    const search::Outcome shuffledEmpty =
+        search::enumerateUntil(problem, 1, Clock::now() + std::chrono::seconds(10), 3);
+    suite.expect("shuffling does not change the outcome of a complete search",
+                 shuffledEmpty.finished && shuffledEmpty.covers == 0);
+
     const search::Outcome cut =
         search::enumerateUntil(problem, 0, Clock::now() + std::chrono::milliseconds(10));
     suite.expect("a search past its deadline is reported as unfinished", !cut.finished);

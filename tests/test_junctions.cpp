@@ -1,4 +1,4 @@
-// Splits of a recognition site across a junction (section 3.4).
+// Splits of a recognition site across a junction (section 3.5).
 #include "junctions.hpp"
 #include "testing.hpp"
 
@@ -8,7 +8,7 @@ int main() {
     Suite suite("junctions");
     const std::vector<junctions::Split> splits = junctions::allSplits();
 
-    // the order of Table 3.1: GCAGC for k = 4..1, then GCTGC for k = 4..1
+    // the order of Table 3.1: GCAGC for j = 4..1, then GCTGC for j = 4..1
     const std::vector<std::pair<dna::Word, dna::Word>> expected = {
         {"GCAG", "C"}, {"GCA", "GC"}, {"GC", "AGC"}, {"G", "CAGC"},
         {"GCTG", "C"}, {"GCT", "GC"}, {"GC", "TGC"}, {"G", "CTGC"}};

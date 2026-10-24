@@ -1,5 +1,5 @@
 // Searches B(4,n) for walks of length 3 that use every rho-orbit exactly once
-// (the question left open in section 4.5), or checks a saved family.
+// (section 4.5), or checks a saved family.
 // usage: walk_family [n] [seconds] [seed]
 //        walk_family --verify file [n]
 #include "debruijn.hpp"

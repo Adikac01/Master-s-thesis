@@ -1,4 +1,4 @@
-// Structure of B(4,4) and of the subgraph spanned by a solution.
+// Structure of B(4,4) and of the subgraph given by a list of symbols or edges.
 // usage: graph_analysis [file | --table]
 #include "conditions.hpp"
 #include "debruijn.hpp"
@@ -6,6 +6,7 @@
 #include "report.hpp"
 #include "symbol_io.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -52,26 +53,46 @@ bool analyseSolution(const std::string& path) {
             std::cerr << path << ":" << error.line << ": " << error.message << "\n";
         return false;
     }
-    const conditions::SymbolList symbols = table.symbols();
-    if (symbols.empty()) {
-        std::cerr << "No symbols found in " << path << "\n";
+    const conditions::SymbolList words = table.symbols();
+    if (words.empty()) {
+        std::cerr << "No words found in " << path << "\n";
         return false;
     }
 
+    // A file of words of length 4 is a list of edges, otherwise of symbols.
+    const bool edgeList = std::all_of(words.begin(), words.end(), [](const dna::Word& word) {
+        return word.size() == dna::EDGE_LENGTH;
+    });
     std::set<dna::Word> distinct;
-    for (const dna::Word& symbol : symbols)
-        for (const dna::Word& edge : dna::symbolEdges(symbol)) distinct.insert(edge);
+    if (edgeList)
+        distinct.insert(words.begin(), words.end());
+    else
+        for (const dna::Word& symbol : words)
+            for (const dna::Word& edge : dna::symbolEdges(symbol)) distinct.insert(edge);
     const std::vector<dna::Word> edges(distinct.begin(), distinct.end());
     const debruijn::SubgraphStats stats = debruijn::analyseSubgraph(edges);
 
-    std::cout << "Subgraph spanned by " << path << "\n"
-              << "  symbols: " << symbols.size()
-              << "   edges: " << edges.size()
+    std::cout << "Subgraph spanned by " << path << "\n  ";
+    if (!edgeList) std::cout << "symbols: " << words.size() << "   ";
+    std::cout << "edges: " << edges.size()
               << "   vertices touched: " << stats.vertices << "\n"
               << "  unbalanced vertices: " << stats.unbalanced
               << "   total imbalance: " << stats.imbalance << "\n"
               << "  weakly connected: " << (stats.weaklyConnected ? "yes" : "no")
-              << "\n\n";
+              << "\n";
+    if (edgeList) {
+        std::set<dna::Word> orbits;
+        bool selfComplementary = false;
+        for (const dna::Word& edge : edges) {
+            selfComplementary = selfComplementary || dna::isSelfComplementary(edge);
+            orbits.insert(dna::orbitRepresentative(edge));
+        }
+        const bool full = !selfComplementary && words.size() == edges.size() &&
+                          orbits.size() == edges.size() &&
+                          orbits.size() == dna::countOrbits(dna::EDGE_LENGTH);
+        std::cout << "  full transversal of the rho-orbits: " << (full ? "yes" : "no") << "\n";
+    }
+    std::cout << "\n";
     return true;
 }
 

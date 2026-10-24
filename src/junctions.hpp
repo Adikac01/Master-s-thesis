@@ -1,7 +1,7 @@
 #ifndef JUNCTIONS_HPP
 #define JUNCTIONS_HPP
 
-// Ways a recognition site can straddle the junction of two symbols (section 3.4).
+// Ways a recognition site can straddle the junction of two symbols (section 3.5).
 
 #include "dna.hpp"
 

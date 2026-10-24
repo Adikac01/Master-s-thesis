@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <atomic>
 #include <mutex>
+#include <random>
 #include <set>
 #include <thread>
 
@@ -65,9 +66,15 @@ std::size_t countCovers(const Problem& problem, unsigned choice,
 }
 
 Outcome enumerateUntil(const Problem& problem, unsigned choice,
-                       std::chrono::steady_clock::time_point deadline) {
-    const conditions::SymbolList symbols =
+                       std::chrono::steady_clock::time_point deadline,
+                       unsigned seed) {
+    conditions::SymbolList symbols =
         cover_model::allowedUnder(problem.candidates, problem.splits, choice);
+    if (seed != 0) {
+        std::seed_seq sequence{seed, choice};
+        std::mt19937 rng(sequence);
+        std::shuffle(symbols.begin(), symbols.end(), rng);
+    }
     std::vector<unsigned> masks;
     masks.reserve(symbols.size());
     for (const dna::Word& symbol : symbols)
@@ -120,7 +127,8 @@ std::vector<Outcome> searchAll(const Problem& problem, double seconds,
         auto worker = [&]() {
             for (std::size_t i = next++; i < open.size(); i = next++) {
                 const unsigned choice = open[i];
-                const Outcome fresh = enumerateUntil(problem, choice, Clock::now() + slice);
+                const Outcome fresh = enumerateUntil(problem, choice, Clock::now() + slice,
+                                                     static_cast<unsigned>(round));
                 std::lock_guard<std::mutex> lock(guard);
                 // A longer run finds everything a shorter one did, so keep the best.
                 if (fresh.finished || fresh.covers >= outcomes[choice].covers)

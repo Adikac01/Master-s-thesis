@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
 
     report::heading("Verification of symbol list: " + path);
     printGraphFacts();
-    // The choice of banned sides (section 3.4) under which this set is counted.
+    // The choice of banned sides (section 3.5) under which this set is counted.
     const std::vector<junctions::Split> splits = junctions::allSplits();
     unsigned choice = 0;
     for (const dna::Word& symbol : symbols) choice |= junctions::suffixMask(symbol, splits);

@@ -24,7 +24,7 @@ struct CheckResult {
 };
 
 // Whether the symbol can appear in some admissible set: it is a candidate
-// (Definition 3.3.2) and uu contains no recognition site (Remark 3.4.1).
+// (Definition 3.4.2) and uu contains no recognition site (Remark 3.5.1).
 bool mayAppearInAdmissibleSet(const dna::Word& symbol);
 
 CheckResult symbolsWellFormed(const SymbolList& symbols);

@@ -1,0 +1,45 @@
+# 40 symbols from the appendix of A. Chattopadhyay, A. Chakrabarti,
+# Optimal Codeword Construction for DNA-based Finite Automata,
+# arXiv:2206.01926 (2022).
+#
+# The verifier rejects this set: conditions (A) and (B2) fail.
+CGAAAA
+ATGGAA
+CCTGAA
+TGACAA
+TCGTAA
+ACCAGA
+CGAGGA
+GACGGA
+GAACGA
+ATCCGA
+CTATGA
+ATGTGA
+TAAACA
+TAGCCA
+CGCCCA
+GATTCA
+CAGGTA
+GGTGTA
+TAACTA
+TCCCTA
+CCTCTA
+GTATTA
+TAGTTA
+CGGCAG
+ACTCAG
+AAATAG
+CAGTAG
+TCTTAG
+GCAAGG
+AGTGGG
+GGTTGG
+CGCACG
+ACAGCG
+GGGGCG
+AATGCG
+CGACCG
+ATCTCG
+GTTTCG
+GCGATG
+CTTCTG
